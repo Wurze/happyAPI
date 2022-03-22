@@ -2,7 +2,7 @@ const mysql = require('../../dbConnection');
 
 const JsonValidator = require('jsonschema').Validator;
 const validator = new JsonValidator();
-const alcoholJsonSchema = require('../schemas/alcohol.schema.json')
+const alcoholJsonSchema = require('../schemas/alcohol_json');
 validator.addSchema(alcoholJsonSchema);
 const xml = require("object-to-xml");
 const libxml = require('libxmljs2');
@@ -60,11 +60,11 @@ exports.postAlcoholList = (req, res, next) => {
         const country = req.body.country;
         const beer_servings = req.body.beer_servings;
         const wine_servings = req.body.wine_servings;
-        const totalLitOfAlc = req.body.totalLitOfAlc
+        const total_litres_of_pure_alcohol = req.body.total_litres_of_pure_alcohol;
 
 
         try {
-            v.validate(req.body, alcoholSchemaJson, {throwError: true})
+            validator.validate(req.body, alcoholJsonSchema, {throwError: true})
         } catch (e) {
             res.status(401).send('Json does not match with schema ' + e.message);
             return;
@@ -74,7 +74,7 @@ exports.postAlcoholList = (req, res, next) => {
             country: country,
             beer_servings: beer_servings,
             wine_servings: wine_servings,
-            totalLitOfAlc: totalLitOfAlc,
+            total_litres_of_pure_alcohol: total_litres_of_pure_alcohol,
 
         };
 
@@ -94,7 +94,7 @@ exports.postAlcoholList = (req, res, next) => {
         const country = alcoholXmlData.get('//country');
         const beer_servings = alcoholXmlData.get('//beer_servings');
         const wine_servings = alcoholXmlData.get('//wine_servings');
-        const totalLitOfAlc = alcoholXmlData.get('//litersOfAlc');
+        const total_litres_of_pure_alcohol = alcoholXmlData.get('//total_litres_of_pure_alcohol');
 
 
         if(alcoholXmlData.validate(xmlDoc)) {
@@ -102,7 +102,7 @@ exports.postAlcoholList = (req, res, next) => {
                 country: country.text(),
                 beer_servings: beer_servings.text(),
                 wine_servings: wine_servings.text(),
-                totalLitOfAlc: totalLitOfAlc.text(),
+                total_litres_of_pure_alcohol: total_litres_of_pure_alcohol.text(),
             };
             mysql.query('INSERT INTO alcohollist SET ?', alcoholDetails, (err) => {
                 if(err) {
@@ -126,11 +126,11 @@ exports.updateAlcoholList = (req, res, next) => {
         const country = req.body.country;
         const beer_servings = req.body.beer_servings;
         const wine_servings = req.body.wine_servings;
-        const totalLitOfAlc = req.body.totalLitresOfPureAlcohol;
+        const total_litres_of_pure_alcohol = req.body.totalLitresOfPureAlcohol;
 
 
         try {
-            v.validate(req.body, alcoholSchemaJson, {throwError: true})
+            validator.validate(req.body, alcoholJsonSchema, {throwError: true})
         } catch (e) {
             res.status(401).send('Json does not match with schema ' + e.message);
             return;
@@ -139,7 +139,7 @@ exports.updateAlcoholList = (req, res, next) => {
             country: country,
             beer_servings: beer_servings,
             wine_servings: wine_servings,
-            totalLitOfAlc: totalLitOfAlc,
+            total_litres_of_pure_alcohol: total_litres_of_pure_alcohol,
 
         };
 
@@ -160,7 +160,7 @@ exports.updateAlcoholList = (req, res, next) => {
         const country = alcoholXmlData.get('//country');
         const beer_servings = alcoholXmlData.get('//beer_servings');
         const wine_servings = alcoholXmlData.get('//wine_servings');
-        const totalLitOfAlc = alcoholXmlData.get('//litersOfAlc');
+        const total_litres_of_pure_alcohol = alcoholXmlData.get('//total_litres_of_pure_alcohol');
 
 
 
@@ -170,7 +170,7 @@ exports.updateAlcoholList = (req, res, next) => {
                 country: country.text(),
                 beer_servings: beer_servings.text(),
                 wine_servings: wine_servings.text(),
-                totalLitOfAlc: totalLitOfAlc.text(),
+                total_litres_of_pure_alcohol: total_litres_of_pure_alcohol.text(),
 
             };
             mysql.query('UPDATE alcohollist SET ? WHERE id = ' + id, alcoholDetails, (err) => {

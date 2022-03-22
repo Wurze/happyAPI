@@ -1,9 +1,9 @@
 const mysql = require('../../dbConnection');
 
 const JsonValidator = require('jsonschema').Validator;
-const v = new JsonValidator();
+const validator = new JsonValidator();
 const suicideSchemaJson = require('../schemas/suicide_json');
-v.addSchema(suicideSchemaJson);
+validator.addSchema(suicideSchemaJson);
 
 const xml = require("object-to-xml");
 const libxml = require('libxmljs2');
@@ -58,31 +58,30 @@ exports.getAllSuicideId = (req, res, next) => {
 exports.postSuicideList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const country = req.body.country;
-        const both_rates = req.body.both_sexes;
-        const male_rates = req.body.male_rates;
-        const female_rates = req.body.female_rates;
+        const sex = req.body.sex;
+        const suicide_rates = req.body.suicide_rates;
 
         try {
-            v.validate(req.body, suicideSchemaJson, {throwError: true})
+            validator.validate(req.body, suicideSchemaJson, {throwError: true})
         } catch (e) {
             res.status(401).send('Json does not match with schema ' + e.message);
             return;
         }
 
-        const happiness_record = {
+        const suicideDetails = {
             country: country,
-            both_rates: both_rates,
-            male_rates: male_rates,
-            female_rates: female_rates,
+            sex: sex,
+            suicide_rates: suicide_rates,
+
             
         };
 
-        mysql.query('INSERT INTO suicideList SET ?', happiness_record, (err) => {
+        mysql.query('INSERT INTO suicideList SET ?', suicideDetails, (err) => {
             if(err) {
                 next(err)
             }
             else {
-                res.status(201).json({happinessIndexes: {happinessIndex:  req.body}});
+                res.status(201).json({suicideRates: {suicideRate:  req.body}});
             }
         })
     }
@@ -91,16 +90,14 @@ exports.postSuicideList = (req, res, next) => {
         const suicideXmlData = libxml.parseXmlString(req.body);
 
         const country = suicideXmlData.get('//country');
-        const both_rates = suicideXmlData.get('//both-rates');
-        const male_rates = suicideXmlData.get('//male-rates');
-        const female_rates = suicideXmlData.get('//female-rates');
+        const sex = suicideXmlData.get('//sex');
+        const suicide_rates = suicideXmlData.get('//suicide_rates');
 
         if(suicideXmlData.validate(xmlDoc)) {
             const suicideDetails = {
                 country: country.text(),
-                both_rates: both_rates.text(),
-                male_rates: male_rates.text(),
-                female_rates:female_rates.text(),
+                sex: sex.text(),
+                suicide_rates: suicide_rates.text(),
 
             };
             mysql.query('INSERT INTO suicideList SET ?', suicideDetails, (err) => {
@@ -123,22 +120,22 @@ exports.updateSuicideList = (req, res, next) => {
         const id = req.params.id;
 
         const country = req.body.country;
-        const both_rates = req.body.both_sexes;
-        const male_rates = req.body.male_rates;
-        const female_rates = req.body.female_rates;
+        const sex = req.body.sex;
+        const suicide_rates = req.body.suicide_rates;
+        
 
 
         try {
-            v.validate(req.body, suicideSchemaJson, {throwError: true})
+            validator.validate(req.body, suicideSchemaJson, {throwError: true})
         } catch (e) {
             res.status(401).send('Json does not match with schema ' + e.message);
             return;
         }
         const suicideDetails = {
             country: country,
-            both_rates: both_rates,
-            male_rates: male_rates,
-            female_rates: female_rates,
+            sex: sex,
+            suicide_rates: suicide_rates,
+            
         };
 
 
@@ -147,7 +144,7 @@ exports.updateSuicideList = (req, res, next) => {
                 next(err)
             }
             else {
-                res.status(201).json({happinessIndexes: {happinessIndexes:  req.body}});
+                res.status(201).json({suicideRates: {suicideRate:  req.body}});
             }
         });
     }
@@ -156,9 +153,8 @@ exports.updateSuicideList = (req, res, next) => {
         const suicideXmlData = libxml.parseXmlString(req.body);
 
         const country = suicideXmlData.get('//country');
-        const both_rates = suicideXmlData.get('//both-rates');
-        const male_rates = suicideXmlData.get('//male-rates');
-        const female_rates = suicideXmlData.get('//female-rates');
+        const sex = suicideXmlData.get('//sex');
+        const suicide_rates = suicideXmlData.get('//suicide_rates');
 
 
 
@@ -167,9 +163,9 @@ exports.updateSuicideList = (req, res, next) => {
             const id = req.params.id;
             const suicideDetails = {
                 country: country.text(),
-                both_rates: both_rates.text(),
-                male_rates: male_rates.text(),
-                female_rates:female_rates.text(),
+                sex: sex.text(),
+                suicide_rates: suicide_rates.text(),
+                
 
             };
             mysql.query('UPDATE suicideList SET ? WHERE id = ' + id, suicideDetails, (err) => {

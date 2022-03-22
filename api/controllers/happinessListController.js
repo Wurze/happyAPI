@@ -1,9 +1,9 @@
 const mysql = require('../../dbConnection');
 
 const JsonValidator = require('jsonschema').Validator;
-const v = new JsonValidator();
+const validator = new JsonValidator();
 const happinessSchemaJson = require('../schemas/happiness_json');
-v.addSchema(happinessSchemaJson);
+validator.addSchema(happinessSchemaJson);
 
 const xml = require("object-to-xml");
 const libxml = require('libxmljs2');
@@ -62,7 +62,7 @@ exports.postHappinessList = (req, res, next) => {
         const country_economy = req.body.country_economy;
 
         try {
-            v.validate(req.body, happinessSchemaJson, {throwError: true})
+            validator.validate(req.body, happinessSchemaJson, {throwError: true})
         } catch (e) {
             res.status(401).send('Json does not match with schema ' + e.message);
             return;
@@ -128,7 +128,7 @@ exports.updateHappinessList = (req, res, next) => {
 
 
         try {
-            v.validate(req.body, happinessSchemaJson, {throwError: true})
+            validator.validate(req.body, happinessSchemaJson, {throwError: true})
         } catch (e) {
             res.status(401).send('Json does not match with schema ' + e.message);
             return;
