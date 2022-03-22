@@ -1,3 +1,41 @@
 {
-  "$schema":
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "world alcohol consumption",
+  "description": "This is schema describes the world alcohol consumption",
+  "type": "object",
+  "properties": {
+    "countryAlcoholConsumptions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "description": "contains a list of world alcohol consumption",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "country": {
+              "type": "string",
+              "description": "The name of the country"
+            },
+            "beerServings": {
+              "type": "integer",
+              "description": "Amount of beer served in this country"
+            },
+            "wineServings": {
+              "type": "integer",
+              "description": "Amount of wine served in this country"
+            },
+            "totalLitresOfAlcohol": {
+              "type": "number",
+              "description": "total litres of alcohol for this country"
+            }
+          },
+          "required": [
+            "country",
+            "beerServings"
+          ]
+        }
+      ]
+    }
+  }
 }
