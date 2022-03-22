@@ -1,7 +1,10 @@
 const express = require('express');
+// for parsing both data formats
 const bodyParser = require('body-parser');
-const errorHandler = require('errorhandler');//for error handling
-const cors = require('cors');// for making requests from website to another
+//for error handling
+const errorHandler = require('errorhandler');
+// for making requests
+const cors = require('cors');
 const morgan = require('morgan');
 app = express();
 app.use(bodyParser.json());
@@ -10,6 +13,7 @@ app.use(cors());
 app.use(morgan('dev'))
 app.use(errorHandler());
 const routerAPI = require('./api/routes/apiRoute');
+// defining a path of the routes i.e /zacoAPI/happiness
 app.use('/zacoAPI',routerAPI);
 const  PORT = process.env.PORT || 3000;
 
