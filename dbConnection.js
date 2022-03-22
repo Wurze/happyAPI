@@ -3,7 +3,7 @@ let connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: ''
+    database: 'happyAPI'
 });
 connection.connect(function(err) {
     if (err) {
