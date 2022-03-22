@@ -1,6 +1,6 @@
 const suicideSchema = {
     "title": "world suicide-rates",
-    "description": "This schema describes the suicide-rates of both sexes",
+    "description": "This schema describes the suicide-rates of both sexes in the world",
     "type": "object",
     "properties": {
         "country": {
@@ -8,24 +8,19 @@ const suicideSchema = {
             "minLength": 3,
             "description": "shows the name of the country"
         },
-        "both_rates": {
-            "type": "number",
-            "minimum": 1,
+        "sex": {
+            "type": "string",
+            "minimum": 4,
             "description": "shows both sexes's rates of sucide"
         },
-        "male_rates": {
+        "suicide_rates": {
             "type": "number",
             "minimum": 0,
             "description": "shows male suicide-rates"
-        },
-        "female_rates": {
-            "type": "number",
-            "minimum": 0,
-            "description": "shows female suicide-rates"
         }
 
     },
-    "required": ["country", "both_rates"]
+    "required": ["country", "suicide_rates"]
 };
 
 module.exports = suicideSchema;

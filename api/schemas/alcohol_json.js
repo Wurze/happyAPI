@@ -18,14 +18,14 @@ const alcoholSchema = {
             "minimum": 0,
             "description": "shows the wine servings of a country"
         },
-        "totalLiters": {
+        "total_litres_of_pure_alcohol": {
             "type": "number",
             "minimum": 0,
             "description": "total liters of alcohol"
         }
 
     },
-    "required": ["country", "totalLiters"]
+    "required": ["country", "total_litres_of_pure_alcohol"]
 };
 
 module.exports = alcoholSchema;

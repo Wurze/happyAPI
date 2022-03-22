@@ -18,7 +18,7 @@ const happinessSchema = {
             "minimum": 0,
             "description": "shows the standard error of ladder score"
         },
-        "country_name": {
+        "country_economy": {
             "type": "number",
             "minimum": 0,
             "description": "shows the Logged GDP per capita"

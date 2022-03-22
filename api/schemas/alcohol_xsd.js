@@ -14,7 +14,7 @@ const alcoholXmlSchema = '<?xml version="1.0" encoding="UTF-8"?>' +
                 '<xs:element name="country" type="xs:string"/>'+
                 '<xs:element name="beer_servings" type="xs:integer" maxOccurs="1"/>' +
                 '<xs:element name="wine_servings" type="xs:integer" maxOccurs="1"/>' +
-                '<xs:element name="litersOfAlc" type="xs:decimal" maxOccurs="1"/>' +
+                '<xs:element name="total_litres_of_pure_alcohol" type="xs:decimal" maxOccurs="1"/>' +
             '</xs:sequence>'+
         '</xs:complexType>'+
 
