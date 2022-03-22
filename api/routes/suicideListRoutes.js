@@ -1,8 +1,8 @@
 const express = require('express');
 const suicideListRoute = express.Router();
-const {getAllSuicideList,getAllSuicideCountry,postSuicideList,updateSuicideList,deleteSuicideList} = require('../controllers/suicideListController');
+const {getAllSuicideList,getAllSuicideId,postSuicideList,updateSuicideList,deleteSuicideList} = require('../controllers/suicideListController');
 suicideListRoute.get('/',getAllSuicideList);
-suicideListRoute.get('/',getAllSuicideCountry);
+suicideListRoute.get('/',getAllSuicideId);
 suicideListRoute.post('/',postSuicideList);
 suicideListRoute.put('/',updateSuicideList);
 suicideListRoute.delete('/',deleteSuicideList);

@@ -1,8 +1,8 @@
 const express = require('express');
 const alcoholListRoute = express.Router();
-const {getAllAlcoholList,getAllAlcoholCountry,postAlcoholList,updateAlcoholList,deleteAlcoholList} = require('../controllers/happinessListController');
+const {getAllAlcoholList,getAlcoholById,postAlcoholList,updateAlcoholList,deleteAlcoholList} = require('../controllers/alcoholListController');
 alcoholListRoute.get('/',getAllAlcoholList);
-alcoholListRoute.get('/',getAllAlcoholCountry);
+alcoholListRoute.get('/',getAlcoholById);
 alcoholListRoute.post('/',postAlcoholList);
 alcoholListRoute.put('/',updateAlcoholList);
 alcoholListRoute.delete('/',deleteAlcoholList);
