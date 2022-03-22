@@ -8,17 +8,11 @@ const xml = require("object-to-xml");
 const libxml = require('libxmljs2');
 
 const alcoholSchemaXml = require('../schemas/alcohol_xsd');
-const xmlDoc = libxml.parseXmlString(alcoholSchemaXml)
+const xmlDoc = libxml.parseXmlString(alcoholSchemaXml);
 
-exports.create = (req,res) => {
-    if (!req.body) {
-        res.status(400).send({
-          message: "Content can not be empty!"
-        });
-};
 
-exports.getAllAlcohols = (req, res, next) => {
-    dbConnect.query('SELECT * FROM alcohol',(err, alcoholConsumption) => {
+exports.getAllAlcoholList = (req, res, next) => {
+    mysql.query('SELECT * FROM alcohollist',(err, alcoholConsumption) => {
         if(err) {
             next(err)
         } else {
@@ -36,7 +30,7 @@ exports.getAlcoholById = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
 
-        dbConnect.query('SELECT * FROM alcohol WHERE id = ' + id, (err, alcohol)  => {
+        mysql.query('SELECT * FROM alcohollist WHERE id = ' + id, (err, alcohol)  => {
             if(err) {
                 next(err)
             }
@@ -49,7 +43,7 @@ exports.getAlcoholById = (req, res, next) => {
     if(req.get('Content-Type') === 'application/xml') {
         const id = req.params.id;
 
-        dbConnect.query('SELECT * FROM alcohol WHERE id = ' + id, (err, alcohol)  => {
+        mysql.query('SELECT * FROM alcohollist WHERE id = ' + id, (err, alcohol)  => {
             if(err) {
                 next(err)
             }
@@ -61,12 +55,12 @@ exports.getAlcoholById = (req, res, next) => {
 
 }
 
-exports.postAlcohol = (req, res, next) => {
+exports.postAlcoholList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const country = req.body.country;
-        const beerServings = req.body.beerServings;
-        const wineServings = req.body.wineServings;
-        const totalLitresOfPureAlcohol = req.body.totalLitresOfPureAlcohol
+        const beer_servings = req.body.beer_servings;
+        const wine_servings = req.body.wine_servings;
+        const totalLitOfAlc = req.body.totalLitOfAlc
 
 
         try {
@@ -78,13 +72,13 @@ exports.postAlcohol = (req, res, next) => {
 
         const alcoholDetails = {
             country: country,
-            beerServings: beerServings,
-            wineServings: wineServings,
-            totalLitresOfPureAlcohol: totalLitresOfPureAlcohol,
+            beer_servings: beer_servings,
+            wine_servings: wine_servings,
+            totalLitOfAlc: totalLitOfAlc,
 
         };
 
-        dbConnect.query('INSERT INTO alcohol SET ?', alcoholDetails, (err) => {
+        mysql.query('INSERT INTO alcohollist SET ?', alcoholDetails, (err) => {
             if(err) {
                 next(err)
             }
@@ -98,21 +92,19 @@ exports.postAlcohol = (req, res, next) => {
         const alcoholXmlData = libxml.parseXmlString(req.body);
 
         const country = alcoholXmlData.get('//country');
-        const beerServings = alcoholXmlData.get('//beer_servings');
-        const wineServings = alcoholXmlData.get('//wine_servings');
-        const spiritServings = alcoholXmlData.get('//spirit_Servings');
-        const totalLitresOfPureAlcohol = alcoholXmlData.get('//litersOfPureAlc');
+        const beer_servings = alcoholXmlData.get('//beer_servings');
+        const wine_servings = alcoholXmlData.get('//wine_servings');
+        const totalLitOfAlc = alcoholXmlData.get('//litersOfAlc');
 
 
         if(alcoholXmlData.validate(xmlDoc)) {
             const alcoholDetails = {
                 country: country.text(),
-                beerServings: beerServings.text(),
-                wineServings: wineServings.text(),
-                spiritServings: spiritServings.text(),
-                totalLitresOfPureAlcohol: totalLitresOfPureAlcohol.text(),
+                beer_servings: beer_servings.text(),
+                wine_servings: wine_servings.text(),
+                totalLitOfAlc: totalLitOfAlc.text(),
             };
-            dbConnect.query('INSERT INTO alcohol SET ?', alcoholDetails, (err) => {
+            mysql.query('INSERT INTO alcohollist SET ?', alcoholDetails, (err) => {
                 if(err) {
                     next(err)
                 }
@@ -127,14 +119,14 @@ exports.postAlcohol = (req, res, next) => {
     }
 }
 
-exports.updateAlcohol = (req, res, next) => {
+exports.updateAlcoholList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
 
         const country = req.body.country;
-        const beerServings = req.body.beerServings
-        const wineServings = req.body.wineServings;
-        const totalLitresOfPureAlcohol = req.body.totalLitresOfPureAlcohol
+        const beer_servings = req.body.beer_servings;
+        const wine_servings = req.body.wine_servings;
+        const totalLitOfAlc = req.body.totalLitresOfPureAlcohol;
 
 
         try {
@@ -145,14 +137,14 @@ exports.updateAlcohol = (req, res, next) => {
         }
         const alcoholDetails = {
             country: country,
-            beerServings: beerServings,
-            wineServings: wineServings,
-            totalLitresOfPureAlcohol: totalLitresOfPureAlcohol,
+            beer_servings: beer_servings,
+            wine_servings: wine_servings,
+            totalLitOfAlc: totalLitOfAlc,
 
         };
 
 
-        dbConnect.query('UPDATE alcohol SET ? WHERE id = ' + id, alcoholDetails, (err)  => {
+        mysql.query('UPDATE alcohollist SET ? WHERE id = ' + id, alcoholDetails, (err)  => {
             if(err) {
                 next(err)
             }
@@ -166,11 +158,9 @@ exports.updateAlcohol = (req, res, next) => {
         const alcoholXmlData = libxml.parseXmlString(req.body);
 
         const country = alcoholXmlData.get('//country');
-        const beerServings = alcoholXmlData.get('//beer_servings');
-        const wineServings = alcoholXmlData.get('//wine_servings');
-        const spiritServings = alcoholXmlData.get('//spirit_Servings');
-        const totalLitresOfPureAlcohol = alcoholXmlData.get('//litersOfPureAlc');
-
+        const beer_servings = alcoholXmlData.get('//beer_servings');
+        const wine_servings = alcoholXmlData.get('//wine_servings');
+        const totalLitOfAlc = alcoholXmlData.get('//litersOfAlc');
 
 
 
@@ -178,13 +168,12 @@ exports.updateAlcohol = (req, res, next) => {
             const id = req.params.id;
             const alcoholDetails = {
                 country: country.text(),
-                beerServings: beerServings.text(),
-                wineServings: wineServings.text(),
-                spiritServings: spiritServings.text(),
-                totalLitresOfPureAlcohol: totalLitresOfPureAlcohol.text(),
+                beer_servings: beer_servings.text(),
+                wine_servings: wine_servings.text(),
+                totalLitOfAlc: totalLitOfAlc.text(),
 
             };
-            dbConnect.query('UPDATE alcohol SET ? WHERE id = ' + id, alcoholDetails, (err) => {
+            mysql.query('UPDATE alcohollist SET ? WHERE id = ' + id, alcoholDetails, (err) => {
                 if(err) {
                     next(err)
                 }
@@ -199,11 +188,11 @@ exports.updateAlcohol = (req, res, next) => {
     }
 }
 
-exports.deleteAlcohol = (req, res, next) => {
+exports.deleteAlcoholList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
 
-        dbConnect.query('DELETE FROM alcohol WHERE id = ' + id, (err)  => {
+        mysql.query('DELETE FROM alcohollist WHERE id = ' + id, (err)  => {
             if(err) {
                 next(err)
             }
@@ -216,7 +205,7 @@ exports.deleteAlcohol = (req, res, next) => {
     if(req.get('Content-Type') === 'application/xml') {
         const id = req.params.id;
 
-        dbConnect.query('DELETE FROM alcohol WHERE id = ' + id, (err)  => {
+        mysql.query('DELETE FROM alcohollist WHERE id = ' + id, (err)  => {
             if(err) {
                 next(err)
             }
@@ -225,5 +214,4 @@ exports.deleteAlcohol = (req, res, next) => {
             }
         });
     }
-}
 }

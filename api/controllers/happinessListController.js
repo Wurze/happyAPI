@@ -1,8 +1,8 @@
-const dbConnect = require('../dbConnect');
+const mysql = require('../../dbConnection');
 
 const JsonValidator = require('jsonschema').Validator;
 const v = new JsonValidator();
-const happinessSchemaJson = require('../schemas/happiness.schema.json');
+const happinessSchemaJson = require('../schemas/happiness_json');
 v.addSchema(happinessSchemaJson);
 
 const xml = require("object-to-xml");
@@ -12,7 +12,7 @@ const happinessSchemaXml = require('../schemas/happiness_xsd');
 const xmlDoc = libxml.parseXmlString(happinessSchemaXml)
 
 exports.getAllHappinessList = (req, res, next) => {
-    dbConnect.query('SELECT * FROM happiness',(err, happinessIndex) => {
+    mysql.query('SELECT * FROM happinessList',(err, happinessIndex) => {
         if(err) {
             next(err)
         } else {
@@ -30,7 +30,7 @@ exports.getAllHappinessId = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
 
-        dbConnect.query('SELECT * FROM happiness WHERE id = ' + id, (err, happinessIndex)  => {
+        mysql.query('SELECT * FROM happinessList WHERE id = ' + id, (err, happinessIndex)  => {
             if(err) {
                 next(err)
             }
@@ -43,7 +43,7 @@ exports.getAllHappinessId = (req, res, next) => {
     if(req.get('Content-Type') === 'application/xml') {
         const id = req.params.id;
 
-        dbConnect.query('SELECT * FROM happiness WHERE id = ' + id, (err, happinessIndex)  => {
+        mysql.query('SELECT * FROM happinessList WHERE id = ' + id, (err, happinessIndex)  => {
             if(err) {
                 next(err)
             }
@@ -54,12 +54,12 @@ exports.getAllHappinessId = (req, res, next) => {
     }
 }
 
-exports.postHappiness = (req, res, next) => {
+exports.postHappinessList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const country = req.body.country;
-        const ladderScore = req.body.ladderScore;
-        const standardErrorOfLadderScore = req.body.standardErrorOfLadderScore
-        const loggedGDPPerCapita = req.body.loggedGDPPerCapita;
+        const happiness_rank = req.body.happiness_rank;
+        const happiness_score = req.body.happiness_score
+        const country_economy = req.body.country_economy;
 
         try {
             v.validate(req.body, happinessSchemaJson, {throwError: true})
@@ -68,15 +68,15 @@ exports.postHappiness = (req, res, next) => {
             return;
         }
 
-        const happinessDetails = {
+        const happiness_record = {
             country: country,
-            ladderScore: ladderScore,
-            standardErrorOfLadderScore: standardErrorOfLadderScore,
-            loggedGDPPerCapita: loggedGDPPerCapita,
+            happiness_rank: happiness_rank,
+            happiness_score: happiness_score,
+            country_economy: country_economy,
             
         };
 
-        dbConnect.query('INSERT INTO happiness SET ?', happinessDetails, (err) => {
+        mysql.query('INSERT INTO happinessList SET ?', happiness_record, (err) => {
             if(err) {
                 next(err)
             }
@@ -90,18 +90,19 @@ exports.postHappiness = (req, res, next) => {
         const happinessXmlData = libxml.parseXmlString(req.body);
 
         const country = happinessXmlData.get('//country');
-        const ladderScore = happinessXmlData.get('//ladderScore');
-        const standardErrorOfLadderScore = happinessXmlData.get('//standardErrorOfLadderScore');
-  
+        const happiness_rank = happinessXmlData.get('//happiness-rank');
+        const happiness_score = happinessXmlData.get('//happiness-score');
+        const country_economy = happinessXmlData.get('//country-economy')
 
         if(happinessXmlData.validate(xmlDoc)) {
-            const hapinessDetails = {
+            const happinessDetails = {
                 country: country.text(),
-                ladderScore: ladderScore.text(),
-                standardErrorOfLadderScore: standardErrorOfLadderScore.text(),
+                happiness_rank: happiness_rank.text(),
+                happiness_score: happiness_score.text(),
+                country_economy:country_economy.text(),
 
             };
-            dbConnect.query('INSERT INTO happiness SET ?', hapinessDetails, (err) => {
+            mysql.query('INSERT INTO happinessList SET ?', happinessDetails, (err) => {
                 if(err) {
                     next(err)
                 }
@@ -116,14 +117,14 @@ exports.postHappiness = (req, res, next) => {
     }
 }
 
-exports.updateHappiness = (req, res, next) => {
+exports.updateHappinessList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
 
         const country = req.body.country;
-        const ladderScore = req.body.ladderScore;
-        const standardErrorOfLadderScore = req.body.standardErrorOfLadderScore;
-        const loggedGDPPerCapita = req.body.loggedGDPPerCapita;
+        const happiness_rank = req.body.happiness_rank;
+        const happiness_score = req.body.happiness_score
+        const country_economy = req.body.country_economy;
 
 
         try {
@@ -132,15 +133,15 @@ exports.updateHappiness = (req, res, next) => {
             res.status(401).send('Json does not match with schema ' + e.message);
             return;
         }
-        const hapinessDetails = {
+        const happinessDetails = {
             country: country,
-            ladderScore: ladderScore,
-            standardErrorOfLadderScore: standardErrorOfLadderScore,
-            loggedGDPPerCapita: loggedGDPPerCapita,
+            happiness_rank: happiness_rank,
+            happiness_score: happiness_score,
+            country_economy: country_economy,
         };
 
 
-        dbConnect.query('UPDATE happiness SET ? WHERE id = ' + id, hapinessDetails, (err)  => {
+        mysql.query('UPDATE happinessList SET ? WHERE id = ' + id, happinessDetails, (err)  => {
             if(err) {
                 next(err)
             }
@@ -154,22 +155,23 @@ exports.updateHappiness = (req, res, next) => {
         const happinessXmlData = libxml.parseXmlString(req.body);
 
         const country = happinessXmlData.get('//country');
-        const ladderScore = happinessXmlData.get('//ladderScore');
-        const standardErrorOfLadderScore = happinessXmlData.get('//standardErrorOfLadderScore');
+        const happiness_rank = happinessXmlData.get('//happiness-rank');
+        const happiness_score = happinessXmlData.get('//happiness-score');
+        const country_economy = happinessXmlData.get('//country-economy')
 
 
 
 
         if(happinessXmlData.validate(xmlDoc)) {
             const id = req.params.id;
-            const hapinessDetails = {
+            const happinessDetails = {
                 country: country.text(),
-                regionalIndicator: regionalIndicator.text(),
-                ladderScore: ladderScore.text(),
-                standardErrorOfLadderScore: standardErrorOfLadderScore.text(),
+                happiness_rank: happiness_rank.text(),
+                happiness_score: happiness_score.text(),
+                country_economy:country_economy.text(),
 
             };
-            dbConnect.query('UPDATE happiness SET ? WHERE id = ' + id, hapinessDetails, (err) => {
+            mysql.query('UPDATE happinessList SET ? WHERE id = ' + id, happinessDetails, (err) => {
                 if(err) {
                     next(err)
                 }
@@ -183,10 +185,10 @@ exports.updateHappiness = (req, res, next) => {
         }
     }
 }
-exports.deleteHappiness = (req, res, next) => {
+exports.deleteHappinessList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json'){
         const id = req.params.id;
-        dbConnect.query('DELETE FROM happiness WHERE id = ' + id, (err) => {
+        mysql.query('DELETE FROM happinessList WHERE id = ' + id, (err) => {
             if(err) {
                 next(err)
             } else {
@@ -196,7 +198,7 @@ exports.deleteHappiness = (req, res, next) => {
     }
     if(req.get('Content-Type') === 'application/xml'){
         const id = req.params.id;
-        dbConnect.query('DELETE FROM happiness WHERE id = ' + id, (err) => {
+        mysql.query('DELETE FROM happinessList WHERE id = ' + id, (err) => {
             if(err) {
                 next(err)
             } else {
