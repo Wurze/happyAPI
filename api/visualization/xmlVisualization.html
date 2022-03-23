@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src=
+"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js">
+    </script>
+    </head>
+
+    <body>
+        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+        <script>
+            
+            let leastHappy=0;
+            let lessHappy=0;
+            let Happy=0;
+            let mostHappy=0;
+            getHappinessRank();
+            
+            
+            async function getHappinessRank(){
+
+            await fetchData('http://localhost:3000/zacoAPI/happiness').then(datapoints =>{
+                let parser = new DOMParser();
+                let xml  = parser.parseFromString(datapoints, "application/xml");
+                let happiness_score =  xml.getElementsByTagName('happiness_score');
+                
+                for(let i = 0; i < happiness_score.length; i++){
+                    let scoreValue = happiness_score[i].firstChild.nodeValue;
+                    if(scoreValue < 4){
+                        leastHappy++;
+                    }
+                    if(scoreValue > 4 && scoreValue < 5){
+                        lessHappy++;
+                    }
+                    if(scoreValue > 5 && scoreValue < 6){
+                        Happy++;
+                    }
+                    if(scoreValue > 6){
+                        mostHappy++;
+                    }
+                }
+                const canvasChart = document.getElementById('myChart');
+                const myChart = new Chart(canvasChart,{
+                    type:'horizontalBar',
+                    data: {
+                    labels: ['Least happy','Less happy','Happy','Most happy'],
+                    datasets:[
+                        {
+                            label:'Happiness',
+                            data:[leastHappy,lessHappy,Happy,mostHappy],
+                            backgroundColor:[
+                            'rgb(54, 162, 235)',
+                                'rgb(54, 162, 235)',
+                                'rgb(54, 162, 235)',
+                                'rgb(54, 162, 235)',
+                                'rgb(54, 162, 235)',
+                                'rgb(54, 162, 235)',
+                                'rgb(54, 162, 235)',
+                                'rgb(54, 162, 235)',
+                                'rgb(54, 162, 235)',
+                                'rgb(54, 162, 235)',
+                            ]
+                        }
+
+                    ]
+                    }
+                })
+                
+                console.log(happiness_score);
+            })
+            
+                   
+        }
+            // async function getAlcoholicCountry(){
+
+            // }
+            // async function getSuicidalCountry(){
+
+            // }
+
+        async function fetchData(url){
+                
+                const response = await fetch(url,{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/xml'
+                },
+            }).then(res =>{
+                return datapoints = res.text();
+            })
+                
+                return datapoints;
+            }
+
+        </script>
+    </body>
+</html>
