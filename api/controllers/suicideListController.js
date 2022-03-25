@@ -11,7 +11,7 @@ const libxml = require('libxmljs2');
 const suicideSchemaXml = require('../schemas/suicide_xsd');
 const xmlDoc = libxml.parseXmlString(suicideSchemaXml);
 
-
+// select everything from the table suicideList
 exports.getAllSuicideList = (req, res, next) => {
     mysql.query('SELECT * FROM suicideList',(err, suicideRate) => {
         if(err) {
@@ -26,7 +26,7 @@ exports.getAllSuicideList = (req, res, next) => {
         }
     });
 }
-
+// select everything from the table suicideList based on ID
 exports.getAllSuicideId = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
@@ -54,7 +54,7 @@ exports.getAllSuicideId = (req, res, next) => {
         });
     }
 }
-
+// Create a new entry in the table suicideList
 exports.postSuicideList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const country = req.body.country;
@@ -110,7 +110,7 @@ exports.postSuicideList = (req, res, next) => {
         }
     }
 }
-
+// update one entry or multiple in the table suicideList
 exports.updateSuicideList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
@@ -174,6 +174,7 @@ exports.updateSuicideList = (req, res, next) => {
         }
     }
 }
+// Delete from the table based on the ID
 exports.deleteSuicideList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json'){
         const id = req.params.id;

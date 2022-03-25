@@ -21,7 +21,7 @@
                 await getSuicidalCountry();
             }
 
-
+            // async function to fetch the json data on /happiness end-point and populate the chart.
             async function getHappinessRank(){
             await fetchData('http://localhost:3000/zacoAPI/happiness').then(datapoints =>{
                 
@@ -68,6 +68,7 @@
             
                    
         }
+        // async function to fetch the json data on /alcohol end-point and populate the chart.
             async function getAlcoholicCountry(){
                 await fetchData('http://localhost:3000/zacoAPI/alcohol').then(datapoints =>{
                 
@@ -114,6 +115,7 @@
             
                
             }
+            // async function to fetch the json data on /suicide end-point and populate the chart.
             async function getSuicidalCountry(){
                 await fetchData('http://localhost:3000/zacoAPI/suicide').then(datapoints =>{
                 

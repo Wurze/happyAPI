@@ -10,7 +10,7 @@ const libxml = require('libxmljs2');
 const alcoholSchemaXml = require('../schemas/alcohol_xsd');
 const xmlDoc = libxml.parseXmlString(alcoholSchemaXml);
 
-
+// select everything from the table alcohollist
 exports.getAllAlcoholList = (req, res, next) => {
     mysql.query('SELECT * FROM alcohollist',(err, alcoholConsumption) => {
         if(err) {
@@ -26,6 +26,7 @@ exports.getAllAlcoholList = (req, res, next) => {
     });
 }
 
+// select everything from the table alcohollist based on ID
 exports.getAlcoholById = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
@@ -54,7 +55,7 @@ exports.getAlcoholById = (req, res, next) => {
     }
 
 }
-
+// Create a new entry in the table alcohollist
 exports.postAlcoholList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const country = req.body.country;
@@ -118,7 +119,7 @@ exports.postAlcoholList = (req, res, next) => {
         }
     }
 }
-
+// update one entry or multiple in the table alcohollist
 exports.updateAlcoholList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
@@ -187,7 +188,7 @@ exports.updateAlcoholList = (req, res, next) => {
         }
     }
 }
-
+// Delete from the table based on the ID
 exports.deleteAlcoholList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;

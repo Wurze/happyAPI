@@ -11,6 +11,7 @@ const libxml = require('libxmljs2');
 const happinessSchemaXml = require('../schemas/happiness_xsd');
 const xmlDoc = libxml.parseXmlString(happinessSchemaXml)
 
+// select everything from the table happinessList
 exports.getAllHappinessList = (req, res, next) => {
     mysql.query('SELECT * FROM happinessList',(err, happinessIndex) => {
         if(err) {
@@ -25,7 +26,7 @@ exports.getAllHappinessList = (req, res, next) => {
         }
     });
 }
-
+// select everything from the table happinessList based on ID
 exports.getAllHappinessId = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
@@ -53,7 +54,7 @@ exports.getAllHappinessId = (req, res, next) => {
         });
     }
 }
-
+// Create a new entry in the table happinessList
 exports.postHappinessList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const country = req.body.country;
@@ -116,7 +117,7 @@ exports.postHappinessList = (req, res, next) => {
         }
     }
 }
-
+// update one entry or multiple in the table happinessList
 exports.updateHappinessList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
@@ -185,6 +186,7 @@ exports.updateHappinessList = (req, res, next) => {
         }
     }
 }
+// Delete from the table based on the ID
 exports.deleteHappinessList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json'){
         const id = req.params.id;
