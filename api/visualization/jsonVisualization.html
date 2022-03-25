@@ -7,15 +7,21 @@
     </head>
 
     <body>
-        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+        <canvas id="myHappinessChart" style="width:100%;max-width:1000px"></canvas>
+        <canvas id="myAlcoholChart" style="width:100%;max-width:1000px"></canvas>
+        <canvas id="mySuicideChart" style="width:100%;max-width:1000px"></canvas>
         <script>
-            let leastHappy=0;
-            let lessHappy=0;
-            let Happy=0;
-            let mostHappy=0;
-            getHappinessRank();
+           
+
+            drawCharts();
             
-            
+            async function drawCharts(){
+                await getHappinessRank();
+                await getAlcoholicCountry();
+                await getSuicidalCountry();
+            }
+
+
             async function getHappinessRank(){
             await fetchData('http://localhost:3000/zacoAPI/happiness').then(datapoints =>{
                 
@@ -27,47 +33,34 @@
                     return index.country;
                     
                 })
-                for(let i = 0; i < happiness_score.length; i++){
-                    if(happiness_score[i] < 4){
-                        leastHappy++;
-                    }
-                    if(happiness_score[i] > 4 && happiness_score[i] < 5){
-                        lessHappy++;
-                    }
-                    if(happiness_score[i] > 5 && happiness_score[i] < 6){
-                        Happy++;
-                    }
-                    if(happiness_score[i] > 6){
-                        mostHappy++;
-                    }
-                }
-                const canvasChart = document.getElementById('myChart');
+            
+                const canvasChart = document.getElementById('myHappinessChart');
                 const myChart = new Chart(canvasChart,{
                     type:'horizontalBar',
                     data: {
-                    labels: ['Least happy','Less happy','Happy','Most happy'],
+                    labels: country,
                     datasets:[
                         {
-                            label:'Happiness',
-                            data:[leastHappy,lessHappy,Happy,mostHappy],
-                            backgroundColor:[
-                            'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                            ]
+                            label:'World Happiness Ranking',
+                            data:happiness_score,
+                            backgroundColor:'orange'
                         }
 
                     ],
                     
                     
+                    },
+                    options: {
+                    scales: {
+                        yAxes:[{
+                    ticks:{
+                        display: false,
+                        autoSkip: true,
+                        maxTicksLimit: 2
                     }
+                }]
+                    }
+                }
                 })
                 
                 console.log(happiness_score);
@@ -75,12 +68,98 @@
             
                    
         }
-            // async function getAlcoholicCountry(){
+            async function getAlcoholicCountry(){
+                await fetchData('http://localhost:3000/zacoAPI/alcohol').then(datapoints =>{
+                
+                const total_litres_of_pure_alcohol = datapoints.alcoholConsumptions.alcoholConsumption.map(function(index){
+                    return index.total_litres_of_pure_alcohol;
+                    
+                })
+                const country = datapoints.alcoholConsumptions.alcoholConsumption.map(function(index){
+                    return index.country;
+                    
+                })
+                
+                const canvasChart = document.getElementById('myAlcoholChart');
+                const myChart = new Chart(canvasChart,{
+                    type:'horizontalBar',
+                    data: {
+                    labels: country,
+                    datasets:[
+                        {
+                            label:'World Alcohol Consumption',
+                            data:total_litres_of_pure_alcohol,
+                            backgroundColor:"black"
+                        }
 
-            // }
-            // async function getSuicidalCountry(){
+                    ],
+                    
+                    
+                    },
+                    options: {
+                    scales: {
+                        yAxes:[{
+                    ticks:{
+                        display: false,
+                        autoSkip: true,
+                        maxTicksLimit: 2
+                    }
+                }]
+                    }
+                }
+                })
+                
+                
+            })
+            
+               
+            }
+            async function getSuicidalCountry(){
+                await fetchData('http://localhost:3000/zacoAPI/suicide').then(datapoints =>{
+                
+                const suicide_rates = datapoints.suicideRates.suicideRate.map(function(index){
+                    return index.suicide_rates;
+                    
+                })
+                const country = datapoints.suicideRates.suicideRate.map(function(index){
+                    return index.country;
+                    
+                })
+                
+                const canvasChart = document.getElementById('mySuicideChart');
+                const myChart = new Chart(canvasChart,{
+                    type:'horizontalBar',
+                    data: {
+                    labels: country,
+                    datasets:[
+                        {
+                            label:'World Suicide Rates',
+                            data:suicide_rates,
+                            backgroundColor:'red'
+                        }
 
-            // }
+                    ],
+                    
+                    
+                    },
+                    options: {
+                    scales: {
+                        yAxes:[{
+                    ticks:{
+                        display: false,
+                        autoSkip: true,
+                        maxTicksLimit: 2
+                    }
+                }]
+                    }
+                }
+                })
+                
+              
+            })
+            
+               
+            }
 
         async function fetchData(url){
                 

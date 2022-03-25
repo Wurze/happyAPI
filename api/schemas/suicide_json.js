@@ -8,15 +8,10 @@ const suicideSchema = {
             "minLength": 3,
             "description": "shows the name of the country"
         },
-        "sex": {
-            "type": "string",
-            "minimum": 4,
-            "description": "shows both sexes's rates of sucide"
-        },
         "suicide_rates": {
             "type": "number",
             "minimum": 0,
-            "description": "shows male suicide-rates"
+            "description": "shows suicide-rates"
         }
 
     },

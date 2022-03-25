@@ -4,7 +4,7 @@
     "description": "This schema describes the happiness of the world",
     "type": "object",
     "properties": {
-      "Worlds": {
+      "Worldhappiness": {
         "type": "array",
         "minItems": 1,
         "maxItems": 5,
@@ -21,12 +21,12 @@
               "happiness_rank": {
                 "type": "number",
                 "minimum": 1,
-                "description": "shows the ladder score"
+                "description": "shows the happiness rank in the ladder of a country"
               },
               "happiness_score": {
                 "type": "number",
                 "minimum": 0,
-                "description": "shows the standard error of ladder score"
+                "description": "shows the score of happiness of a country"
               },
               "country_economy": {
                 "type": "number",
@@ -35,7 +35,7 @@
               }
 
             },
-            "required": ["country","ladderScore"]
+            "required": ["country","happiness_score"]
           }
         ]
       }

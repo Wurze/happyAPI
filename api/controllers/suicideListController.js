@@ -13,15 +13,15 @@ const xmlDoc = libxml.parseXmlString(suicideSchemaXml);
 
 
 exports.getAllSuicideList = (req, res, next) => {
-    mysql.query('SELECT * FROM suicideList',(err, happinessIndex) => {
+    mysql.query('SELECT * FROM suicideList',(err, suicideRate) => {
         if(err) {
             next(err)
         } else {
             if(req.get('Content-Type') === 'application/json') {
-                res.status(200).json({happinessIndexes: {happinessIndex}});
+                res.status(200).json({suicideRates: {suicideRate}});
             }
             if(req.get('Content-Type') === 'application/xml') {
-                res.send(xml({happinessIndexes: {happinessIndex}}));
+                res.send(xml({suicideRates: {suicideRate}}));
             }
         }
     });
@@ -31,12 +31,12 @@ exports.getAllSuicideId = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const id = req.params.id;
 
-        mysql.query('SELECT * FROM suicideList WHERE id = ' + id, (err, happinessIndex)  => {
+        mysql.query('SELECT * FROM suicideList WHERE id = ' + id, (err, suicideRate)  => {
             if(err) {
                 next(err)
             }
             else {
-                res.status(200).json({happinessIndexes: {happinessIndex}})
+                res.status(200).json({suicideRates: {suicideRate}})
             }
         });
     }
@@ -44,12 +44,12 @@ exports.getAllSuicideId = (req, res, next) => {
     if(req.get('Content-Type') === 'application/xml') {
         const id = req.params.id;
 
-        mysql.query('SELECT * FROM suicideList WHERE id = ' + id, (err, happinessIndex)  => {
+        mysql.query('SELECT * FROM suicideList WHERE id = ' + id, (err, suicideRate)  => {
             if(err) {
                 next(err)
             }
             else {
-                res.status(200).send(xml({happinessIndexes: {happinessIndex}}));
+                res.status(200).send(xml({suicideRates: {suicideRate}}));
             }
         });
     }
@@ -58,7 +58,6 @@ exports.getAllSuicideId = (req, res, next) => {
 exports.postSuicideList = (req, res, next) => {
     if(req.get('Content-Type') === 'application/json') {
         const country = req.body.country;
-        const sex = req.body.sex;
         const suicide_rates = req.body.suicide_rates;
 
         try {
@@ -70,7 +69,6 @@ exports.postSuicideList = (req, res, next) => {
 
         const suicideDetails = {
             country: country,
-            sex: sex,
             suicide_rates: suicide_rates,
 
             
@@ -90,13 +88,11 @@ exports.postSuicideList = (req, res, next) => {
         const suicideXmlData = libxml.parseXmlString(req.body);
 
         const country = suicideXmlData.get('//country');
-        const sex = suicideXmlData.get('//sex');
         const suicide_rates = suicideXmlData.get('//suicide_rates');
 
         if(suicideXmlData.validate(xmlDoc)) {
             const suicideDetails = {
                 country: country.text(),
-                sex: sex.text(),
                 suicide_rates: suicide_rates.text(),
 
             };
@@ -120,7 +116,6 @@ exports.updateSuicideList = (req, res, next) => {
         const id = req.params.id;
 
         const country = req.body.country;
-        const sex = req.body.sex;
         const suicide_rates = req.body.suicide_rates;
         
 
@@ -133,7 +128,6 @@ exports.updateSuicideList = (req, res, next) => {
         }
         const suicideDetails = {
             country: country,
-            sex: sex,
             suicide_rates: suicide_rates,
             
         };
@@ -153,7 +147,6 @@ exports.updateSuicideList = (req, res, next) => {
         const suicideXmlData = libxml.parseXmlString(req.body);
 
         const country = suicideXmlData.get('//country');
-        const sex = suicideXmlData.get('//sex');
         const suicide_rates = suicideXmlData.get('//suicide_rates');
 
 
@@ -163,7 +156,6 @@ exports.updateSuicideList = (req, res, next) => {
             const id = req.params.id;
             const suicideDetails = {
                 country: country.text(),
-                sex: sex.text(),
                 suicide_rates: suicide_rates.text(),
                 
 

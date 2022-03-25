@@ -12,9 +12,7 @@ const suicideXMLSchema = '<?xml version="1.0" encoding="UTF-8"?>'+
        ' <xs:complexType name="suicide-record">'+
            '<xs:sequence>'+
                 '<xs:element name="country" type="xs:string"/>'+
-                '<xs:element name="both-rates" type="xs:double"/>'+
-                '<xs:element name="male-rates" type="xs:double"/>'+
-                '<xs:element name="female-rates" type="xs:double"/>'+
+                '<xs:element name="suicide-rates" type="xs:double"/>'+
             '</xs:sequence>'+
         '</xs:complexType>'+
 '</xs:schema>'

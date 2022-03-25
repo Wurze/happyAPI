@@ -7,76 +7,181 @@
     </head>
 
     <body>
-        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+        <canvas id="myHappinessChart" style="width:100%;max-width:1000px"></canvas>
+        <canvas id="myAlcoholChart" style="width:100%;max-width:1000px"></canvas>
+        <canvas id="mySuicideChart" style="width:100%;max-width:1000px"></canvas>
         <script>
             
-            let leastHappy=0;
-            let lessHappy=0;
-            let Happy=0;
-            let mostHappy=0;
-            getHappinessRank();
+           
+            drawCharts();
             
-            
+            async function drawCharts(){
+                await getHappinessRank();
+                await getAlcoholicCountry();
+                await getSuicidalCountry();
+            }
+            // async function to fetch the xml data on /happiness end-point and populate the chart.
             async function getHappinessRank(){
 
             await fetchData('http://localhost:3000/zacoAPI/happiness').then(datapoints =>{
                 let parser = new DOMParser();
                 let xml  = parser.parseFromString(datapoints, "application/xml");
                 let happiness_score =  xml.getElementsByTagName('happiness_score');
+                let country =  xml.getElementsByTagName('country');
                 
-                for(let i = 0; i < happiness_score.length; i++){
-                    let scoreValue = happiness_score[i].firstChild.nodeValue;
-                    if(scoreValue < 4){
-                        leastHappy++;
-                    }
-                    if(scoreValue > 4 && scoreValue < 5){
-                        lessHappy++;
-                    }
-                    if(scoreValue > 5 && scoreValue < 6){
-                        Happy++;
-                    }
-                    if(scoreValue > 6){
-                        mostHappy++;
-                    }
-                }
-                const canvasChart = document.getElementById('myChart');
+                
+                var pieValues = [];
+            var pieLabels = [];
+            
+            for (var i = 0; i < country.length; i++) {
+               
+                pieLabels.push(country[i].firstChild.nodeValue);
+            }
+
+            for (var i = 0; i < happiness_score.length; i++) {
+               
+               pieValues.push(happiness_score[i].firstChild.nodeValue);
+           }
+               
+            
+                const canvasChart = document.getElementById('myHappinessChart');
                 const myChart = new Chart(canvasChart,{
                     type:'horizontalBar',
                     data: {
-                    labels: ['Least happy','Less happy','Happy','Most happy'],
+                    labels: pieLabels,
                     datasets:[
                         {
-                            label:'Happiness',
-                            data:[leastHappy,lessHappy,Happy,mostHappy],
-                            backgroundColor:[
-                            'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                                'rgb(54, 162, 235)',
-                            ]
+                            label:'World Happiness Ranking',
+                            data:pieValues,
+                            backgroundColor:'orange'
                         }
 
                     ]
+                    },
+                    options: {
+                    scales: {
+                        yAxes:[{
+                    ticks:{
+                        display: false,
+                        autoSkip: true,
+                        maxTicksLimit: 2
                     }
+                }]
+                    }
+                }
                 })
                 
-                console.log(happiness_score);
+                console.log(pieLabels);
             })
             
                    
         }
-            // async function getAlcoholicCountry(){
+        // async function to fetch the xml data on /alcohol end-point and populate the chart.
+            async function getAlcoholicCountry(){
+                await fetchData('http://localhost:3000/zacoAPI/alcohol').then(datapoints =>{
+                let parser = new DOMParser();
+                let xml  = parser.parseFromString(datapoints, "application/xml");
+                let total_liters_of_pure_alcohol =  xml.getElementsByTagName('total_litres_of_pure_alcohol');
+                let country =  xml.getElementsByTagName('country');
+                var pieValues = [];
+                var pieLabels = [];
+            
+                for (var i = 0; i < country.length; i++) {
+                
+                    pieLabels.push(country[i].firstChild.nodeValue);
+                }
 
-            // }
-            // async function getSuicidalCountry(){
+                for (var i = 0; i < total_liters_of_pure_alcohol.length; i++) {
+                
+                pieValues.push(total_liters_of_pure_alcohol[i].firstChild.nodeValue);
+                }
+            
+                const canvasChart = document.getElementById('myAlcoholChart');
+                const myChart = new Chart(canvasChart,{
+                    type:'horizontalBar',
+                    data: {
+                    labels: pieLabels,
+                    datasets:[
+                        {
+                            label:'World Alcohol Consumption',
+                            data:pieValues,
+                            backgroundColor:'black'
+                        }
 
-            // }
+                    ]
+                    },
+                    options: {
+                    scales: {
+                        yAxes:[{
+                    ticks:{
+                        display: false,
+                        autoSkip: true,
+                        maxTicksLimit: 2
+                    }
+                }]
+                    }
+                }
+                })
+                
+                console.log(pieValues);
+            })
+            
+                
+            }
+
+            // async function to fetch the xml data on /suicide end-point and populate the chart.
+            async function getSuicidalCountry(){
+                await fetchData('http://localhost:3000/zacoAPI/suicide').then(datapoints =>{
+                let parser = new DOMParser();
+                let xml  = parser.parseFromString(datapoints, "application/xml");
+                let suicide_rates =  xml.getElementsByTagName('suicide_rates');
+                let country =  xml.getElementsByTagName('country');
+                var pieValues = [];
+                var pieLabels = [];
+            
+                for (var i = 0; i < country.length; i++) {
+                
+                    pieLabels.push(country[i].firstChild.nodeValue);
+                }
+
+                for (var i = 0; i < suicide_rates.length; i++) {
+                
+                pieValues.push(suicide_rates[i].firstChild.nodeValue);
+                }
+                
+                const canvasChart = document.getElementById('mySuicideChart');
+                const myChart = new Chart(canvasChart,{
+                    type:'horizontalBar',
+                    data: {
+                    labels: pieLabels,
+                    datasets:[
+                        {
+                            label:'World Suicide Rates',
+                            data:pieValues,
+                            backgroundColor:'red'
+                        }
+
+                    ]
+                    },
+                    //chart option
+                    options: {
+                    scales: {
+                        yAxes:[{
+                    ticks:{
+                        display: false,
+                        autoSkip: true,
+                        maxTicksLimit: 2
+                    }
+                }]
+                    }
+                }
+                })
+                
+                console.log(suicide_rates);
+            })
+            
+                
+            }
 
         async function fetchData(url){
                 
